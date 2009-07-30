@@ -1,0 +1,26 @@
+===================
+ TODO
+===================
+
+	- check for impact of file diffs and take them into account
+	- allowing the user to state that a change is OK and not to highlight it again
+	- periodically check for new changes in the repo and warn user about lines
+	(- fix utf8 encoded files)
+	
+	- filters (for users or something like this)
+
+===================
+ Research Question
+===================
+
+	- Shortcomings of the State of the Art
+	- Can we assist in raising change awareness in software development
+	- How effective are we?
+	
+===================
+ Study
+===================
+
+	- Two groups of students (one using our tool)
+	- Each programming a kind of 1 or 2 hour exercise
+	- Introducing somehow an error that will be highlighted in the one group because it was contained in the last 5 commits

@@ -1,0 +1,8 @@
+.metadata
+example:*
+org.eclipse.*
+*/bin/
+.class
+svn.core
+svn.ui
+
