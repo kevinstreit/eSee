@@ -6,14 +6,14 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="eSee Preferences"
-            class="esee.core.preferences.PreferencePage"
-            id="esee.core.preferences.PreferencePage">
+            class="de.unisb.cs.esee.core.preferences.PreferencePage"
+            id="de.unisb.cs.esee.core.preferences.PreferencePage">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="esee.core.preferences.PreferenceInitializer">
+            class="de.unisb.cs.esee.core.preferences.PreferenceInitializer">
       </initializer>
    </extension>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="eSee_UI_Feature"
+      id="de.unisb.cs.esee.ui.feature"
       label="eSee UI"
       version="0.1.3">
 
@@ -26,12 +26,12 @@
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="eSeeCore" version="0.1.3" match="greaterOrEqual"/>
-      <import feature="eSee_Core_Feature" version="0.1.3"/>
+      <import feature="de.unisb.cs.esee.core.feature" version="0.1.3"/>
+      <import plugin="de.unisb.cs.esee.core" version="0.1.3" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="eSeeUI"
+         id="de.unisb.cs.esee.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
