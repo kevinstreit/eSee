@@ -3,7 +3,7 @@
    <feature url="features/de.unisb.cs.esee.core.feature_0.1.3.jar" id="de.unisb.cs.esee.core.feature" version="0.1.3">
       <category name="de.unisb.cs.esee"/>
    </feature>
-   <feature url="features/de.unisb.cs.esee.ui.feature_0.1.3.jar" id="de.unisb.cs.esee.ui.feature" version="0.1.3">
+   <feature url="features/de.unisb.cs.esee.ui.feature_0.1.4.jar" id="de.unisb.cs.esee.ui.feature" version="0.1.4">
       <category name="de.unisb.cs.esee"/>
    </feature>
    <category-def name="de.unisb.cs.esee" label="eSee Main category"/>

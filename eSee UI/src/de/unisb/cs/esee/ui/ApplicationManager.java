@@ -5,8 +5,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import de.unisb.cs.esee.ui.actions.AnnotateResourcesAction;
-
 
 public class ApplicationManager extends AbstractUIPlugin {
 
@@ -21,7 +19,6 @@ public class ApplicationManager extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
 	super.start(context);
 	ApplicationManager.plugin = this;
-	new AnnotateResourcesAction().start();
     }
 
     @Override

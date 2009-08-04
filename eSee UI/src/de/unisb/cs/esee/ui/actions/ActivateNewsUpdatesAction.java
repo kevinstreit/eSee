@@ -1,12 +1,5 @@
 package de.unisb.cs.esee.ui.actions;
 
-import de.unisb.cs.esee.core.data.RevisionInfoCache;
-import de.unisb.cs.esee.core.exception.NotVersionedException;
-import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
-import de.unisb.cs.esee.ui.ApplicationManager;
-import de.unisb.cs.esee.ui.decorators.NewestResourcesDecorator;
-import de.unisb.cs.esee.ui.markers.RevMarker;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -22,6 +15,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+
+import de.unisb.cs.esee.core.data.RevisionInfoCache;
+import de.unisb.cs.esee.core.exception.NotVersionedException;
+import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
+import de.unisb.cs.esee.ui.ApplicationManager;
+import de.unisb.cs.esee.ui.decorators.NewestResourcesDecorator;
+import de.unisb.cs.esee.ui.markers.RevMarker;
 
 
 public class ActivateNewsUpdatesAction implements IWorkbenchWindowActionDelegate {
@@ -52,17 +52,17 @@ public class ActivateNewsUpdatesAction implements IWorkbenchWindowActionDelegate
 			    true,
 			    IResource.DEPTH_INFINITE
 		    );
-
-		    PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-			    PlatformUI.getWorkbench().getDecoratorManager().update(NewestResourcesDecorator.ID);
-			}
-		    });
 		} catch (CoreException e) {
 		    e.printStackTrace();
 		}
 	    }
 	}
+	
+	PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+	    public void run() {
+		PlatformUI.getWorkbench().getDecoratorManager().update(NewestResourcesDecorator.ID);
+	    }
+	});
     }
 
     public void selectionChanged(IAction action, ISelection selection) {

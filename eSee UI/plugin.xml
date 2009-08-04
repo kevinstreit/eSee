@@ -8,9 +8,10 @@
             objectClass="org.eclipse.core.resources.IFile"
             id="de.unisb.cs.esee.ui.fileContribution">
          <menu
+               icon="resources/images/activateNewsIcon.png"
+               id="de.unisb.cs.esee.ui.fileContextMenu"
                label="eSee"
-               path="additions"
-               id="de.unisb.cs.esee.ui.fileContextMenu">
+               path="additions">
             <separator
                   name="group1">
             </separator>
@@ -20,14 +21,15 @@
                class="de.unisb.cs.esee.ui.actions.ShowNewsContextAction"
                menubarPath="de.unisb.cs.esee.ui.fileContextMenu/group1"
                enablesFor="1"
-               id="de.unisb.cs.esee.ui.newAction">
+               id="de.unisb.cs.esee.ui.showNewsAction">
          </action>
       </objectContribution>
       <objectContribution
-            id="de.unisb.cs.esee.ui.fileContribution"
+            id="de.unisb.cs.esee.ui.compilationUnitContribution"
             objectClass="org.eclipse.jdt.core.ICompilationUnit">
          <menu
-               id="de.unisb.cs.esee.ui.fileContextMenu"
+               icon="resources/images/activateNewsIcon.png"
+               id="de.unisb.cs.esee.ui.compilationUnitContextMenu"
                label="eSee"
                path="additions">
             <separator
@@ -37,9 +39,30 @@
          <action
                class="de.unisb.cs.esee.ui.actions.ShowNewsContextAction"
                enablesFor="1"
-               id="de.unisb.cs.esee.ui.newAction"
+               id="de.unisb.cs.esee.ui.showNewsAction"
                label="Show News"
-               menubarPath="de.unisb.cs.esee.ui.fileContextMenu/group1">
+               menubarPath="de.unisb.cs.esee.ui.compilationUnitContextMenu/group1">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="de.unisb.cs.esee.ui.resourceContribution"
+            objectClass="org.eclipse.core.resources.IResource">
+         <menu
+               icon="resources/images/activateNewsIcon.png"
+               id="de.unisb.cs.esee.ui.fileContextMenu"
+               label="eSee"
+               path="additions">
+            <separator
+                  name="group2">
+            </separator>
+         </menu>
+         <action
+               class="de.unisb.cs.esee.ui.actions.MarkResourceOKContextAction"
+               enablesFor="1"
+               id="de.unisb.cs.esee.ui.markOkAction"
+               label="Mark resource revision as OK"
+               menubarPath="de.unisb.cs.esee.ui.fileContextMenu/group2">
          </action>
       </objectContribution>
    </extension>
