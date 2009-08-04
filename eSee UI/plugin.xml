@@ -29,7 +29,7 @@
             objectClass="org.eclipse.jdt.core.ICompilationUnit">
          <menu
                icon="resources/images/activateNewsIcon.png"
-               id="de.unisb.cs.esee.ui.compilationUnitContextMenu"
+               id="de.unisb.cs.esee.ui.javaElementContextMenu"
                label="eSee"
                path="additions">
             <separator
@@ -41,7 +41,7 @@
                enablesFor="1"
                id="de.unisb.cs.esee.ui.showNewsAction"
                label="Show News"
-               menubarPath="de.unisb.cs.esee.ui.compilationUnitContextMenu/group1">
+               menubarPath="de.unisb.cs.esee.ui.javaElementContextMenu/group1">
          </action>
       </objectContribution>
       <objectContribution
@@ -63,6 +63,27 @@
                id="de.unisb.cs.esee.ui.markOkAction"
                label="Mark resource revision as OK"
                menubarPath="de.unisb.cs.esee.ui.fileContextMenu/group2">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="de.unisb.cs.esee.ui.javaElementContribution"
+            objectClass="org.eclipse.jdt.core.IJavaElement">
+         <menu
+               icon="resources/images/activateNewsIcon.png"
+               id="de.unisb.cs.esee.ui.javaElementContextMenu"
+               label="eSee"
+               path="additions">
+            <separator
+                  name="group2">
+            </separator>
+         </menu>
+         <action
+               class="de.unisb.cs.esee.ui.actions.MarkResourceOKContextAction"
+               enablesFor="1"
+               id="de.unisb.cs.esee.ui.markOkAction"
+               label="Mark resource revision as OK"
+               menubarPath="de.unisb.cs.esee.ui.javaElementContextMenu/group2">
          </action>
       </objectContribution>
    </extension>

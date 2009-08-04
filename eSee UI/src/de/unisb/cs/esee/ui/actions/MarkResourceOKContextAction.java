@@ -5,6 +5,8 @@ import java.util.Date;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -69,6 +71,12 @@ public class MarkResourceOKContextAction implements IObjectActionDelegate {
 
 	    if (obj instanceof IResource) {
 		selectedResource = (IResource) obj;
+	    } else if (obj instanceof IJavaElement) {
+		try {
+		    selectedResource = ((IJavaElement) obj).getCorrespondingResource();
+		} catch (JavaModelException e) {
+		    selectedResource = null;
+		}
 	    } else {
 		selectedResource = null;
 	    }
