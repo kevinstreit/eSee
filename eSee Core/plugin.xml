@@ -5,16 +5,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="eSee Preferences"
             class="de.unisb.cs.esee.core.preferences.PreferencePage"
-            id="de.unisb.cs.esee.core.preferences.PreferencePage">
+            id="de.unisb.cs.esee.core.preferences.PreferencePage"
+            name="eSee Preferences">
       </page>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="de.unisb.cs.esee.core.preferences.PreferenceInitializer">
-      </initializer>
    </extension>
 
 </plugin>

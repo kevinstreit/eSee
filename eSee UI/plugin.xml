@@ -61,7 +61,7 @@
                class="de.unisb.cs.esee.ui.actions.MarkResourceOKContextAction"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.markOkAction"
-               label="Mark resource revision as OK"
+               label="Mark as not new"
                menubarPath="de.unisb.cs.esee.ui.fileContextMenu/group2">
          </action>
       </objectContribution>
@@ -82,7 +82,7 @@
                class="de.unisb.cs.esee.ui.actions.MarkResourceOKContextAction"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.markOkAction"
-               label="Mark resource revision as OK"
+               label="Mark as not new"
                menubarPath="de.unisb.cs.esee.ui.javaElementContextMenu/group2">
          </action>
       </objectContribution>
@@ -93,7 +93,7 @@
             annotationImageProvider="de.unisb.cs.esee.ui.markers.RevisionAnnotationImageProvider"
             annotationType="de.unisb.cs.esee.ui.revAnnotation_0"
             colorPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.cPrefKey_0"
-            colorPreferenceValue="216,170,117"
+            colorPreferenceValue="184,208,188"
             contributesToHeader="false"
             highlightPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.highlightPrefKey_0"
             highlightPreferenceValue="true"
@@ -113,7 +113,7 @@
             annotationImageProvider="de.unisb.cs.esee.ui.markers.RevisionAnnotationImageProvider"
             annotationType="de.unisb.cs.esee.ui.revAnnotation_1"
             colorPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.cPrefKey_1"
-            colorPreferenceValue="223,185,141"
+            colorPreferenceValue="194,215,198"
             contributesToHeader="false"
             highlightPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.highlightPrefKey_1"
             highlightPreferenceValue="true"
@@ -133,7 +133,7 @@
             annotationImageProvider="de.unisb.cs.esee.ui.markers.RevisionAnnotationImageProvider"
             annotationType="de.unisb.cs.esee.ui.revAnnotation_2"
             colorPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.cPrefKey_2"
-            colorPreferenceValue="234,204,168"
+            colorPreferenceValue="202,220,205"
             contributesToHeader="false"
             highlightPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.highlightPrefKey_2"
             highlightPreferenceValue="true"
@@ -153,7 +153,7 @@
             annotationImageProvider="de.unisb.cs.esee.ui.markers.RevisionAnnotationImageProvider"
             annotationType="de.unisb.cs.esee.ui.revAnnotation_3"
             colorPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.cPrefKey_3"
-            colorPreferenceValue="249,227,201"
+            colorPreferenceValue="210,224,212"
             contributesToHeader="false"
             highlightPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.highlightPrefKey_3"
             highlightPreferenceValue="true"
@@ -173,7 +173,7 @@
             annotationImageProvider="de.unisb.cs.esee.ui.markers.RevisionAnnotationImageProvider"
             annotationType="de.unisb.cs.esee.ui.revAnnotation_4"
             colorPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.cPrefKey_4"
-            colorPreferenceValue="249,239,227"
+            colorPreferenceValue="220,231,221"
             contributesToHeader="false"
             highlightPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.highlightPrefKey_4"
             highlightPreferenceValue="true"
@@ -315,6 +315,21 @@
             </and>
          </enablement>
       </decorator>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.unisb.cs.esee.ui.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="de.unisb.cs.esee.core.preferences.PreferencePage"
+            class="de.unisb.cs.esee.ui.preferences.PreferencePage"
+            id="de.unisb.cs.esee.ui.preferences.PreferencePage"
+            name="UI">
+      </page>
    </extension>
 
 </plugin>
