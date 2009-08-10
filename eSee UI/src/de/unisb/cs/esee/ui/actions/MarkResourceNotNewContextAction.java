@@ -16,12 +16,15 @@ import org.eclipse.ui.PlatformUI;
 
 import de.unisb.cs.esee.core.annotate.EseeAnnotations;
 import de.unisb.cs.esee.core.annotate.Annotator.Location;
+import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.ui.decorators.NewestResourcesDecorator;
+import de.unisb.cs.esee.ui.markers.RevMarker;
+import de.unisb.cs.esee.ui.util.IRevisionHighlighter;
 
-public class MarkResourceOKContextAction implements IObjectActionDelegate {
+public class MarkResourceNotNewContextAction implements IObjectActionDelegate {
     private IResource selectedResource = null;
 
-    public MarkResourceOKContextAction() {
+    public MarkResourceNotNewContextAction() {
 	super();
     }
 
@@ -39,12 +42,14 @@ public class MarkResourceOKContextAction implements IObjectActionDelegate {
 		res.accept(new IResourceVisitor() {
 		    public boolean visit(IResource resource) throws CoreException {
 			try {
-			    Date curRevDate = EseeAnnotations.getResourceDateAttribute(resource, Location.Local, null);
+			    SingleRevisionInfo revInfo = EseeAnnotations.getResourceRevisionInfo(resource, Location.Local, null);
+			    Date curRevDate = new Date(revInfo.stamp);
 
 			    resource.setPersistentProperty(
-				NewestResourcesDecorator.lastCheckedDateProp,
+				IRevisionHighlighter.lastCheckedDateProp,
 				Long.toString(curRevDate.getTime())
 			    );
+			    resource.deleteMarkers(RevMarker.ID_NEW_LINE, false, IResource.DEPTH_ZERO);
 
 			    return true;
 			} catch (Exception e) {

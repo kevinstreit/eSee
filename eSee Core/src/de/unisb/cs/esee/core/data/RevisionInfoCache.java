@@ -28,7 +28,7 @@ public enum RevisionInfoCache {
 		}
 
 		if (info != null) {
-		    String curRevID = annotator.getLocalRevisionID(resource, monitor);
+		    String curRevID = annotator.getLocalResourceRevisionInfo(resource, monitor).revision;
 
 		    if (curRevID.equals(info.revisionID)) {
 			return info;

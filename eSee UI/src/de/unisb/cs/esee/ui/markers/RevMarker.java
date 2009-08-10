@@ -8,4 +8,6 @@ public class RevMarker {
 	"de.unisb.cs.esee.ui.revMarker_3",
 	"de.unisb.cs.esee.ui.revMarker_4"
     };
+    
+    public static final String ID_NEW_LINE = "de.unisb.cs.esee.ui.revMarker_new";
 }

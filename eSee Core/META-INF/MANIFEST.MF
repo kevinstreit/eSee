@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ESEE-Core
 Bundle-SymbolicName: de.unisb.cs.esee.core;singleton:=true
-Bundle-Version: 0.1.3
+Bundle-Version: 0.1.4
 Bundle-Activator: de.unisb.cs.esee.core.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

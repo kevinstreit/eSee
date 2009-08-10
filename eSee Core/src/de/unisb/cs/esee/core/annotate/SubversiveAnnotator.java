@@ -1,8 +1,6 @@
 package de.unisb.cs.esee.core.annotate;
 
 
-import java.util.Date;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.svn.core.IStateFilter;
@@ -15,8 +13,8 @@ import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 
-import de.unisb.cs.esee.core.data.LineRevisionInfo;
 import de.unisb.cs.esee.core.data.RevisionInfo;
+import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.core.exception.BrokenConnectionException;
 import de.unisb.cs.esee.core.exception.NotVersionedException;
 
@@ -39,42 +37,23 @@ public class SubversiveAnnotator implements Annotator {
 	    SVNAnnotationData[] data = annotateOp.getAnnotatedLines();
 
 	    if (data != null) {
-		LineRevisionInfo[] changes = new LineRevisionInfo[data.length];
+		SingleRevisionInfo[] changes = new SingleRevisionInfo[data.length];
 
 		int p = 0;
 		for (SVNAnnotationData annotation : data) {
-		    changes[p++] = new LineRevisionInfo(annotation.date, "" + annotation.revision, annotation.author);
+		    changes[p++] = new SingleRevisionInfo(annotation.date, "" + annotation.revision, annotation.author);
 		}
 
-		return new RevisionInfo(changes, "" + local.getRevision());
+		return new RevisionInfo(changes, Long.toString(local.getRevision()), local.getLastCommitDate());
 	    } else {
-		return new RevisionInfo(new LineRevisionInfo[0], "" + local.getRevision());
+		return new RevisionInfo(new SingleRevisionInfo[0], Long.toString(local.getRevision()), local.getLastCommitDate());
 	    }
 	} else {
 	    throw new NotVersionedException();
 	}
     }
 
-    public String getLocalRevisionID(IResource resource, IProgressMonitor monitor) throws NotVersionedException {
-	ILocalResource local = SVNRemoteStorage.instance().asLocalResource(resource);
-	boolean onRepo = IStateFilter.SF_ONREPOSITORY.accept(local);
-	if (!onRepo) {
-	    throw new NotVersionedException();
-	}
-
-	return (local.getRevision() == SVNRevision.INVALID_REVISION_NUMBER ? Annotator.INVALID_REVISION : "" + local.getRevision());
-    }
-
-    public String getRemoteNewestRevisionID(IResource resource, IProgressMonitor monitor) throws BrokenConnectionException {
-	IRepositoryResource remote = SVNRemoteStorage.instance().asRepositoryResource(resource);
-	try {
-	    return (remote.getRevision() == SVNRevision.INVALID_REVISION_NUMBER ? Annotator.INVALID_REVISION : "" + remote.getRevision());
-	} catch (SVNConnectorException e) {
-	    throw new BrokenConnectionException(e.getMessage());
-	}
-    }
-
-    public Date getLocalRevisionDate(IResource resource, IProgressMonitor monitor) throws NotVersionedException {
+    public SingleRevisionInfo getLocalResourceRevisionInfo(IResource resource, IProgressMonitor monitor) throws NotVersionedException {
 	ILocalResource local = SVNRemoteStorage.instance().asLocalResource(resource);
 	boolean onRepo = IStateFilter.SF_ONREPOSITORY.accept(local);
 
@@ -84,12 +63,30 @@ public class SubversiveAnnotator implements Annotator {
 
 	final SVNRevision revision = (local.getRevision() == SVNRevision.INVALID_REVISION_NUMBER ? SVNRevision.HEAD : SVNRevision.fromNumber(local.getRevision()));
 	SVNLocalResourceRevision rev = new SVNLocalResourceRevision(local, revision);
+	
+	SingleRevisionInfo revInfo = new SingleRevisionInfo(
+		rev.getTimestamp(), 
+		Long.toString(local.getRevision()),
+		rev.getAuthor()
+	);
 
-	return new Date(rev.getTimestamp());
+	return revInfo;
     }
 
-    public Date getRemoteNewestRevisionDate(IResource resource, IProgressMonitor monitor) throws BrokenConnectionException {
+    public SingleRevisionInfo getRemoteResourceRevisionInfo(IResource resource, IProgressMonitor monitor) throws BrokenConnectionException {
 	IRepositoryResource remote = SVNRemoteStorage.instance().asRepositoryResource(resource);
-	return new Date(remote.getInfo().lastChangedDate);
+	
+	SingleRevisionInfo revInfo;
+	try {
+	    revInfo = new SingleRevisionInfo(
+	    	remote.getInfo().lastChangedDate, 
+	    	Long.toString(remote.getRevision()),
+	    	remote.getInfo().lastAuthor
+	    );
+	} catch (SVNConnectorException e) {
+	    throw new BrokenConnectionException();
+	}
+
+	return revInfo;
     }
 }

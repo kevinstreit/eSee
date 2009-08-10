@@ -58,7 +58,7 @@
             </separator>
          </menu>
          <action
-               class="de.unisb.cs.esee.ui.actions.MarkResourceOKContextAction"
+               class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewContextAction"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.markOkAction"
                label="Mark as not new"
@@ -79,7 +79,7 @@
             </separator>
          </menu>
          <action
-               class="de.unisb.cs.esee.ui.actions.MarkResourceOKContextAction"
+               class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewContextAction"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.markOkAction"
                label="Mark as not new"
@@ -189,6 +189,26 @@
             verticalRulerPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.vRulerPrefKey_4"
             verticalRulerPreferenceValue="true">
       </specification>
+      <specification
+            annotationImageProvider="de.unisb.cs.esee.ui.markers.RevisionAnnotationImageProvider"
+            annotationType="de.unisb.cs.esee.ui.revAnnotation_new"
+            colorPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.cPrefKey_new"
+            colorPreferenceValue="202,220,205"
+            contributesToHeader="false"
+            highlightPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.highlightPrefKey_new"
+            highlightPreferenceValue="true"
+            includeOnPreferencePage="true"
+            label="Revision Annotation (New Line)"
+            overviewRulerPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.oRulerPrefKey_new"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="3"
+            textPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.textPrefKey_new"
+            textPreferenceValue="true"
+            textStylePreferenceKey="de.unisb.cs.esee.ui.revAnnotation.testStylePrefKey_new"
+            textStylePreferenceValue="NONE"
+            verticalRulerPreferenceKey="de.unisb.cs.esee.ui.revAnnotation.vRulerPrefKey_new"
+            verticalRulerPreferenceValue="true">
+      </specification>
    </extension>
    <extension
          point="org.eclipse.ui.editors.annotationTypes">
@@ -220,6 +240,12 @@
             markerSeverity="0"
             markerType="de.unisb.cs.esee.ui.revMarker_4"
             name="de.unisb.cs.esee.ui.revAnnotation_4"
+            super="org.eclipse.ui.workbench.texteditor.revisionAnnotation">
+      </type>
+      <type
+            markerSeverity="0"
+            markerType="de.unisb.cs.esee.ui.revMarker_new"
+            name="de.unisb.cs.esee.ui.revAnnotation_new"
             super="org.eclipse.ui.workbench.texteditor.revisionAnnotation">
       </type>
    </extension>
@@ -330,6 +356,14 @@
             id="de.unisb.cs.esee.ui.preferences.PreferencePage"
             name="UI">
       </page>
+   </extension>
+   <extension
+         id="de.unisb.cs.esee.ui.revMarker_new"
+         name="Revision Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
    </extension>
 
 </plugin>

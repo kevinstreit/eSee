@@ -3,8 +3,6 @@ package de.unisb.cs.esee.ui.decorators;
 import java.util.Date;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
@@ -15,19 +13,20 @@ import org.eclipse.ui.PlatformUI;
 
 import de.unisb.cs.esee.core.annotate.EseeAnnotations;
 import de.unisb.cs.esee.core.annotate.Annotator.Location;
+import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.core.exception.BrokenConnectionException;
 import de.unisb.cs.esee.core.exception.NotVersionedException;
 import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
-import de.unisb.cs.esee.ui.ApplicationManager;
+import de.unisb.cs.esee.ui.util.IRevisionHighlighter;
+import de.unisb.cs.esee.ui.util.StdRevisionHighlighter;
 
 public class NewestResourcesDecorator implements ILightweightLabelDecorator {
     public static final String ID = "de.unisb.cs.esee.ui.newsdecorator";
     
-    public static final QualifiedName lastCheckedDateProp = new QualifiedName("de.unisb.cs.esee.ui.decorator", "lastCheckedDate");
-    public static final QualifiedName curDateProp = new QualifiedName("de.unisb.cs.esee.ui.decorator", "curDate");
-    
     private Font defaultFont;
     private Font highlightFont;
+    
+    private IRevisionHighlighter highlighter = new StdRevisionHighlighter();
     
     public NewestResourcesDecorator() {
 	PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {    
@@ -46,26 +45,14 @@ public class NewestResourcesDecorator implements ILightweightLabelDecorator {
 	if (element instanceof IResource) {
 	    IResource resource = (IResource) element;
 	    try {
-		Date curRevDate = EseeAnnotations.getResourceDateAttribute(resource, Location.Local, null);
+		SingleRevisionInfo revInfo = EseeAnnotations.getResourceRevisionInfo(resource, Location.Local, null);
+		Date curRevDate = new Date(revInfo.stamp);
 		
-		if (ApplicationManager.getDefault().isHighlightingActive()) {
-		    String lcdStr = resource.getPersistentProperty(lastCheckedDateProp);
-		    
-		    if (lcdStr == null) {
-			decoration.setFont(highlightFont);
-		    } else {
-			long lcdStamp = Long.parseLong(lcdStr);
-			Date lcd = new Date(lcdStamp);
-			
-			if (curRevDate.after(lcd)) {
-			    decoration.setFont(highlightFont);
-			}
-		    }
+		if (highlighter.isChangeOfInterest(resource, curRevDate, revInfo.author)) {
+		    decoration.setFont(highlightFont);
 		} else {
 		    decoration.setFont(defaultFont);
 		}
-	    } catch (CoreException e) {
-		// ignore resource
 	    } catch (UnsupportedSCMException e) {
 		// ignore resource
 	    } catch (BrokenConnectionException e) {

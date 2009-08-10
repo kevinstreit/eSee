@@ -7,7 +7,7 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.unisb.cs.esee.core.Activator;
+import de.unisb.cs.esee.ui.ApplicationManager;
 
 public class PreferencePage
 	extends FieldEditorPreferencePage
@@ -16,7 +16,7 @@ public class PreferencePage
 	public PreferencePage() {
 		super(GRID);
 		
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setPreferenceStore(ApplicationManager.getDefault().getPreferenceStore());
 		setDescription("eSee user interface preferences");
 	}
 	

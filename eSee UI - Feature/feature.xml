@@ -2,7 +2,7 @@
 <feature
       id="de.unisb.cs.esee.ui.feature"
       label="eSee UI"
-      version="0.1.5">
+      version="0.1.6">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -26,8 +26,8 @@
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core" version="3.5.0" match="greaterOrEqual"/>
-      <import feature="de.unisb.cs.esee.core.feature" version="0.1.3"/>
-      <import plugin="de.unisb.cs.esee.core" version="0.1.3" match="greaterOrEqual"/>
+      <import plugin="de.unisb.cs.esee.core" version="0.1.4" match="greaterOrEqual"/>
+      <import feature="de.unisb.cs.esee.core.feature" version="0.1.4" match="perfect"/>
    </requires>
 
    <plugin

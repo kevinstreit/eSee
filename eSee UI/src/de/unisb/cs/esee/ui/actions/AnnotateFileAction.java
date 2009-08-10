@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -29,14 +30,19 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import de.unisb.cs.esee.core.annotate.EseeAnnotations;
-import de.unisb.cs.esee.core.data.LineRevisionInfo;
+import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.core.data.RevisionInfo;
 import de.unisb.cs.esee.core.exception.NotVersionedException;
 import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
+import de.unisb.cs.esee.ui.ApplicationManager;
 import de.unisb.cs.esee.ui.markers.EseeQuickDiffProvider;
 import de.unisb.cs.esee.ui.markers.RevMarker;
 import de.unisb.cs.esee.ui.markers.RevisionAnnotation;
+import de.unisb.cs.esee.ui.preferences.PreferenceConstants;
+import de.unisb.cs.esee.ui.preferences.PreferenceConstants.HighlightingMode;
 import de.unisb.cs.esee.ui.util.EseeUIUtil;
+import de.unisb.cs.esee.ui.util.IRevisionHighlighter;
+import de.unisb.cs.esee.ui.util.StdRevisionHighlighter;
 
 
 public class AnnotateFileAction {
@@ -45,6 +51,8 @@ public class AnnotateFileAction {
     private final boolean openEditorIfClosed;
 
     private static final QualifiedName MARKED_REV_VERSION_PROP = new QualifiedName("de.unisb.cs.esee.ui", "annotatedCacheVersion");
+    private static final QualifiedName LAST_USED_MARKINGTYPE_PROP = new QualifiedName("de.unisb.cs.esee.ui", "lastMarkingType");
+    
     private static final String CACHED_REVISION_INFORMATION_KEY = "de.unisb.cs.esee.ui.revInfoKey";
 
     public AnnotateFileAction(Shell shell, IFile file, boolean openEditorIfClosed) {
@@ -58,13 +66,24 @@ public class AnnotateFileAction {
 	RevisionInfo revInfo = EseeAnnotations.getRevisionInfo(file, monitor);
 
 	if (revInfo != null && file != null) {
+	    String mString = ApplicationManager.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEXT_HIGHLIGHTING_MODE);
+	    HighlightingMode mode = HighlightingMode.valueOf(mString);
+	
 	    Object prop = file.getSessionProperty(AnnotateFileAction.MARKED_REV_VERSION_PROP);
 
 	    Long markedVersion = (Long) prop;
 	    RevisionInformation info = null;
-
-	    if (markedVersion == null || revInfo.cacheVersionId != markedVersion.longValue()) {
-		LineRevisionInfo[] changes = revInfo.lines;
+	    
+	    HighlightingMode lastUsedMode = (HighlightingMode) file.getSessionProperty(AnnotateFileAction.LAST_USED_MARKINGTYPE_PROP);
+	    IRevisionHighlighter highlighter = new StdRevisionHighlighter();
+	    
+	    if (
+		       markedVersion == null 
+		    || revInfo.cacheVersionId != markedVersion.longValue() 
+		    || mode != lastUsedMode
+		    || mode == HighlightingMode.Unchecked // && highlighter.isChangeDateOfInterest(file, new Date(revInfo.lastCommitDate))) 
+	    	) {
+		SingleRevisionInfo[] changes = revInfo.lines;
 
 		info = new RevisionInformation();
 		Map<String, RevisionAnnotation> revisions = new HashMap<String, RevisionAnnotation>();
@@ -74,6 +93,9 @@ public class AnnotateFileAction {
 		for (String mId : RevMarker.ID) {
 		    file.deleteMarkers(mId, false, IResource.DEPTH_ZERO);
 		}
+		
+		file.deleteMarkers(RevMarker.ID_NEW_LINE, false, IResource.DEPTH_ZERO);
+		
 		content = new BufferedReader(new InputStreamReader(file.getContents()));
 
 		int curCharPos = 0;
@@ -119,36 +141,62 @@ public class AnnotateFileAction {
 		    revision.addLine(RevisionAnnotation.END_LINE);
 		}
 
-		TreeSet<Revision> revs = new TreeSet<Revision>(new Comparator<Revision>() {
-		    public int compare(Revision o1, Revision o2) {
-			return o2.getDate().compareTo(o1.getDate());
-		    }
-		});
-		revs.addAll(info.getRevisions());
+		switch (mode) {
+			case Unchecked:
+			    for (int line = 0; line < changes.length; ++line) {
+				try {
+				    Date changeDate = new Date(changes[line].stamp);
+				    if (highlighter.isChangeOfInterest(this.file, changeDate, changes[line].author)) {
+					IMarker m = file.createMarker(RevMarker.ID_NEW_LINE);
 
-		for (int line = 0; line < changes.length; ++line) {
-		    try {
-			int p = 0;
-			for (Revision rev : revs) {
-			    if (changes[line].revision.equals(rev.getId())) {
-				IMarker m = file.createMarker(RevMarker.ID[p]);
-
-				m.setAttributes(
-					new String[] {IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END},
-					new Object[] {rev.getHoverInfo(), changes[line].startPos, changes[line].endPos-1}
-				);
+					m.setAttributes(
+						new String[] {IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END},
+						new Object[] {"Changed on " + changeDate.toString() + " by " + changes[line].author, changes[line].startPos, changes[line].endPos-1}
+					);
+				    }
+				} catch (CoreException e) {
+				    e.printStackTrace();
+				}
 			    }
+			    
+			    break;
+			case Top5:
+			    TreeSet<Revision> revs = new TreeSet<Revision>(new Comparator<Revision>() {
+				public int compare(Revision o1, Revision o2) {
+				    return o2.getDate().compareTo(o1.getDate());
+				}
+			    });
+			    revs.addAll(info.getRevisions());
 
-			    if (++p == RevMarker.ID.length) {
-				break;
+			    for (int line = 0; line < changes.length; ++line) {
+				try {
+				    int p = 0;
+				    for (Revision rev : revs) {
+					if (changes[line].revision.equals(rev.getId())) {
+					    IMarker m = file.createMarker(RevMarker.ID[p]);
+
+					    m.setAttributes(
+						    new String[] {IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END},
+						    new Object[] {rev.getHoverInfo(), changes[line].startPos, changes[line].endPos-1}
+					    );
+					}
+
+					if (++p == RevMarker.ID.length) {
+					    break;
+					}
+				    }
+				} catch (CoreException e) {
+				    e.printStackTrace();
+				}
 			    }
-			}
-		    } catch (CoreException e) {
-			e.printStackTrace();
-		    }
+			    
+			    break;
+			default:
+			    // ignore
 		}
-
+		
 		revInfo.setProperty(AnnotateFileAction.CACHED_REVISION_INFORMATION_KEY, info);
+		file.setSessionProperty(AnnotateFileAction.LAST_USED_MARKINGTYPE_PROP, mode);
 		file.setSessionProperty(AnnotateFileAction.MARKED_REV_VERSION_PROP, new Long(revInfo.cacheVersionId));
 	    } else {
 		info = (RevisionInformation) revInfo.getProperty(AnnotateFileAction.CACHED_REVISION_INFORMATION_KEY);
