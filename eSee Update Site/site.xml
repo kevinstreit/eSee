@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.unisb.cs.esee.core.feature_0.1.4.jar" id="de.unisb.cs.esee.core.feature" version="0.1.4">
+   <feature url="features/de.unisb.cs.esee.core.feature_0.1.5.1.jar" id="de.unisb.cs.esee.core.feature" version="0.1.5.1">
       <category name="de.unisb.cs.esee"/>
    </feature>
-   <feature url="features/de.unisb.cs.esee.ui.feature_0.1.7.jar" id="de.unisb.cs.esee.ui.feature" version="0.1.7">
+   <feature url="features/de.unisb.cs.esee.ui.feature_0.1.8.1.jar" id="de.unisb.cs.esee.ui.feature" version="0.1.8.1">
       <category name="de.unisb.cs.esee"/>
    </feature>
    <category-def name="de.unisb.cs.esee" label="eSee Main category"/>
