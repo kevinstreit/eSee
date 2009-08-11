@@ -3,6 +3,7 @@ package de.unisb.cs.esee.ui.actions;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,8 +31,8 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import de.unisb.cs.esee.core.annotate.EseeAnnotations;
-import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.core.data.RevisionInfo;
+import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.core.exception.NotVersionedException;
 import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
 import de.unisb.cs.esee.ui.ApplicationManager;
@@ -96,7 +97,13 @@ public class AnnotateFileAction {
 		
 		file.deleteMarkers(RevMarker.ID_NEW_LINE, false, IResource.DEPTH_ZERO);
 		
-		content = new BufferedReader(new InputStreamReader(file.getContents()));
+		String charset = file.getCharset();
+		
+		if (Charset.isSupported(file.getCharset())) {
+		    content = new BufferedReader(new InputStreamReader(file.getContents(), Charset.forName(file.getCharset())));
+		} else {
+		    content = new BufferedReader(new InputStreamReader(file.getContents(), Charset.defaultCharset()));
+		}
 
 		int curCharPos = 0;
 
