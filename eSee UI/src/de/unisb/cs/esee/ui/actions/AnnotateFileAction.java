@@ -13,6 +13,8 @@ import java.util.TreeSet;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -68,7 +70,7 @@ public class AnnotateFileAction {
 
 	if (revInfo != null && file != null) {
 	    String mString = ApplicationManager.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEXT_HIGHLIGHTING_MODE);
-	    HighlightingMode mode = HighlightingMode.valueOf(mString);
+	    final HighlightingMode mode = HighlightingMode.valueOf(mString);
 	
 	    Object prop = file.getSessionProperty(AnnotateFileAction.MARKED_REV_VERSION_PROP);
 
@@ -76,7 +78,7 @@ public class AnnotateFileAction {
 	    RevisionInformation info = null;
 	    
 	    HighlightingMode lastUsedMode = (HighlightingMode) file.getSessionProperty(AnnotateFileAction.LAST_USED_MARKINGTYPE_PROP);
-	    IRevisionHighlighter highlighter = new StdRevisionHighlighter();
+	    final IRevisionHighlighter highlighter = new StdRevisionHighlighter();
 	    
 	    if (
 		       markedVersion == null 
@@ -84,9 +86,9 @@ public class AnnotateFileAction {
 		    || mode != lastUsedMode
 		    || mode == HighlightingMode.Unchecked // && highlighter.isChangeDateOfInterest(file, new Date(revInfo.lastCommitDate))) 
 	    	) {
-		SingleRevisionInfo[] changes = revInfo.lines;
+		final SingleRevisionInfo[] changes = revInfo.lines;
 
-		info = new RevisionInformation();
+		final RevisionInformation tmp_info = new RevisionInformation();
 		Map<String, RevisionAnnotation> revisions = new HashMap<String, RevisionAnnotation>();
 
 		BufferedReader content = null;
@@ -96,8 +98,6 @@ public class AnnotateFileAction {
 		}
 		
 		file.deleteMarkers(RevMarker.ID_NEW_LINE, false, IResource.DEPTH_ZERO);
-		
-		String charset = file.getCharset();
 		
 		if (Charset.isSupported(file.getCharset())) {
 		    content = new BufferedReader(new InputStreamReader(file.getContents(), Charset.forName(file.getCharset())));
@@ -119,7 +119,7 @@ public class AnnotateFileAction {
 					new RGB(255, 0, 0),
 					changes[line].stamp
 				));
-			info.addRevision(revision);
+			tmp_info.addRevision(revision);
 		    }
 
 		    revision.addLine(line + 1);
@@ -148,12 +148,14 @@ public class AnnotateFileAction {
 		    revision.addLine(RevisionAnnotation.END_LINE);
 		}
 
-		switch (mode) {
+		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {    
+		    public void run(IProgressMonitor monitor) throws CoreException {
+			switch (mode) {
 			case Unchecked:
 			    for (int line = 0; line < changes.length; ++line) {
 				try {
 				    Date changeDate = new Date(changes[line].stamp);
-				    if (highlighter.isChangeOfInterest(this.file, changeDate, changes[line].author)) {
+				    if (highlighter.isChangeOfInterest(AnnotateFileAction.this.file, changeDate, changes[line].author)) {
 					IMarker m = file.createMarker(RevMarker.ID_NEW_LINE);
 
 					m.setAttributes(
@@ -173,7 +175,7 @@ public class AnnotateFileAction {
 				    return o2.getDate().compareTo(o1.getDate());
 				}
 			    });
-			    revs.addAll(info.getRevisions());
+			    revs.addAll(tmp_info.getRevisions());
 
 			    for (int line = 0; line < changes.length; ++line) {
 				try {
@@ -201,6 +203,10 @@ public class AnnotateFileAction {
 			default:
 			    // ignore
 		}
+		    }
+		}, monitor);
+		
+		info = tmp_info;
 		
 		revInfo.setProperty(AnnotateFileAction.CACHED_REVISION_INFORMATION_KEY, info);
 		file.setSessionProperty(AnnotateFileAction.LAST_USED_MARKINGTYPE_PROP, mode);
