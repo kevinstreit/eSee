@@ -12,6 +12,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.unisb.cs.esee.core.annotate.EseeAnnotations;
 import de.unisb.cs.esee.core.annotate.Annotator.Location;
+import de.unisb.cs.esee.core.data.RevisionInfoCache;
 import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.core.exception.EseeException;
 import de.unisb.cs.esee.ui.ApplicationManager;
@@ -44,6 +45,9 @@ public class MarkNotNewOperation extends Observable {
 				resource.deleteMarkers(RevMarker.ID_NEW_LINE,
 					false, IResource.DEPTH_ZERO);
 
+				RevisionInfoCache.INSTANCE
+					.invalidateFor(resource);
+
 				return true;
 			    } catch (Exception e) {
 				return false;
@@ -62,6 +66,8 @@ public class MarkNotNewOperation extends Observable {
 					.toString(curRevDate.getTime()));
 			resource.deleteMarkers(RevMarker.ID_NEW_LINE, false,
 				IResource.DEPTH_ZERO);
+
+			RevisionInfoCache.INSTANCE.invalidateFor(resource);
 		    } catch (EseeException e) {
 			// ignore
 		    }

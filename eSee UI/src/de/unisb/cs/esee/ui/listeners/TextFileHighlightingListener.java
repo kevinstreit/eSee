@@ -6,7 +6,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -21,8 +20,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import de.unisb.cs.esee.core.data.RevisionInfoCache;
-import de.unisb.cs.esee.core.exception.NotVersionedException;
-import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
 import de.unisb.cs.esee.ui.ApplicationManager;
 import de.unisb.cs.esee.ui.actions.AnnotateFileAction;
 import de.unisb.cs.esee.ui.markers.RevMarker;
@@ -104,20 +101,22 @@ public class TextFileHighlightingListener {
 	    }
 
 	    private void setFileToHighlight(IWorkbenchPartReference partRef) {
-		if (ApplicationManager.getDefault().isHighlightingActive()) {
-		    IWorkbenchPart part = partRef.getPart(false);
+		IWorkbenchPart part = partRef.getPart(false);
 
-		    if (part != null && part instanceof IEditorPart) {
-			IFile file = null;
-			IEditorPart editor = (IEditorPart) part;
-			Object obj = editor.getEditorInput().getAdapter(
-				IFile.class);
-			if (obj != null && obj instanceof IFile) {
-			    file = (IFile) obj;
-			}
+		if (part != null && part instanceof IEditorPart) {
+		    IFile file = null;
+		    IEditorPart editor = (IEditorPart) part;
+		    Object obj = editor.getEditorInput()
+			    .getAdapter(IFile.class);
+		    if (obj != null && obj instanceof IFile) {
+			file = (IFile) obj;
+		    }
 
-			if (file != null && file != selectedFile) {
-			    selectedFile = file;
+		    if (file != null && file != selectedFile) {
+			selectedFile = file;
+
+			if (updater != null) {
+			    updater.getThread().interrupt();
 			}
 		    }
 		}
@@ -163,25 +162,30 @@ public class TextFileHighlightingListener {
 	    }
 	}
 
-	updater = new Job("Annotating Resources") {
+	updater = new Job("eSee: Annotating Resources") {
 	    @Override
 	    protected IStatus run(IProgressMonitor monitor) {
-		try {
-		    while (true) {
-			if (selectedFile != null) {
-			    new AnnotateFileAction(selectedFile, false)
-				    .run(monitor);
+
+		while (true) {
+		    try {
+			try {
+			    if (ApplicationManager.getDefault()
+				    .isHighlightingActive()
+				    && selectedFile != null) {
+				new AnnotateFileAction(selectedFile, false,
+					monitor).start();
+			    }
+			} catch (Exception e) {
+			    // ignore this resource
 			}
+
 			Thread.sleep(10000);
+		    } catch (InterruptedException e) {
+			// ignore this
+			// this job should always run
+			// InterruptedException can be used to immediately mark
+			// the resource (circumvent the 10 seconds)
 		    }
-		} catch (InterruptedException ex) {
-		    return Status.CANCEL_STATUS;
-		} catch (NotVersionedException e) {
-		    return Status.CANCEL_STATUS;
-		} catch (UnsupportedSCMException e) {
-		    return Status.CANCEL_STATUS;
-		} catch (CoreException e) {
-		    return Status.CANCEL_STATUS;
 		}
 	    }
 	};
