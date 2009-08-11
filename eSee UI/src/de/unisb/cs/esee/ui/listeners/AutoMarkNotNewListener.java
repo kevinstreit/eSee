@@ -1,13 +1,7 @@
 package de.unisb.cs.esee.ui.listeners;
 
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPageListener;
@@ -20,15 +14,9 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import de.unisb.cs.esee.core.annotate.EseeAnnotations;
-import de.unisb.cs.esee.core.annotate.Annotator.Location;
-import de.unisb.cs.esee.core.data.SingleRevisionInfo;
-import de.unisb.cs.esee.ui.util.IRevisionHighlighter;
-import de.unisb.cs.esee.ui.util.StdRevisionHighlighter;
+import de.unisb.cs.esee.ui.util.MarkNotNewOperation;
 
 public class AutoMarkNotNewListener implements IPropertyListener {
-    private IRevisionHighlighter highlighter = new StdRevisionHighlighter();
-
     public AutoMarkNotNewListener() {
 	final IPartListener2 partListener = new IPartListener2() {
 	    public void partOpened(IWorkbenchPartReference partRef) {
@@ -131,55 +119,10 @@ public class AutoMarkNotNewListener implements IPropertyListener {
 
     private void mark(final IResource resource) {
 	try {
-	    SingleRevisionInfo revInfo = EseeAnnotations
-		    .getResourceRevisionInfo(resource, Location.Local, null);
-	    Date curRevDate = new Date(revInfo.stamp);
-	    resource.setPersistentProperty(
-		    IRevisionHighlighter.lastCheckedDateProp, Long
-			    .toString(curRevDate.getTime()));
-	    checkParents(resource, highlighter);
+	    MarkNotNewOperation.INSTANCE.markResourceNotNew(resource, false,
+		    true);
 	} catch (Exception e) {
 	    e.printStackTrace();
-	}
-    }
-
-    private void checkParents(IResource resource,
-	    final IRevisionHighlighter highlighter) {
-	final IResource parent = resource.getParent();
-
-	if (parent instanceof IWorkspaceRoot)
-	    return;
-
-	try {
-	    final AtomicBoolean shouldResourceBeMarked = new AtomicBoolean(true);
-	    parent.accept(new IResourceVisitor() {
-		public boolean visit(IResource res) throws CoreException {
-		    if (res == parent)
-			return true;
-
-		    try {
-			SingleRevisionInfo revInfo = EseeAnnotations
-				.getResourceRevisionInfo(res, Location.Local,
-					null);
-			Date childRevDate = new Date(revInfo.stamp);
-
-			if (highlighter.isChangeOfInterest(res, childRevDate,
-				revInfo.author)) {
-			    shouldResourceBeMarked.set(false);
-			}
-		    } catch (Exception e) {
-			// ignore resource
-		    }
-
-		    return false;
-		}
-	    }, IResource.DEPTH_ONE, false);
-
-	    if (shouldResourceBeMarked.get()) {
-		mark(parent);
-	    }
-	} catch (CoreException e) {
-	    // ignore resource
 	}
     }
 }

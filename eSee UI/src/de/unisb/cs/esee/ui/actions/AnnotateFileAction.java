@@ -23,10 +23,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.revisions.Revision;
 import org.eclipse.jface.text.revisions.RevisionInformation;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.ResourceUtil;
@@ -47,7 +47,6 @@ import de.unisb.cs.esee.ui.util.IRevisionHighlighter;
 import de.unisb.cs.esee.ui.util.StdRevisionHighlighter;
 
 public class AnnotateFileAction {
-    private final Shell shell;
     private final IFile file;
     private final boolean openEditorIfClosed;
 
@@ -58,9 +57,7 @@ public class AnnotateFileAction {
 
     private static final String CACHED_REVISION_INFORMATION_KEY = "de.unisb.cs.esee.ui.revInfoKey";
 
-    public AnnotateFileAction(Shell shell, IFile file,
-	    boolean openEditorIfClosed) {
-	this.shell = shell;
+    public AnnotateFileAction(IFile file, boolean openEditorIfClosed) {
 	this.file = file;
 	this.openEditorIfClosed = openEditorIfClosed;
     }
@@ -259,7 +256,7 @@ public class AnnotateFileAction {
 	    }
 
 	    final RevisionInformation rinfo = info;
-	    shell.getDisplay().syncExec(new Runnable() {
+	    PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 		public void run() {
 		    try {
 			IWorkbenchPage page = EseeUIUtil.getActivePage();

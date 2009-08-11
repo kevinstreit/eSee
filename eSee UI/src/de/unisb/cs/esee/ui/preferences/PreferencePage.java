@@ -11,6 +11,7 @@ import de.unisb.cs.esee.ui.ApplicationManager;
 
 public class PreferencePage extends FieldEditorPreferencePage implements
 	IWorkbenchPreferencePage {
+    public static final String ID = "de.unisb.cs.esee.ui.preferences.PreferencePage";
 
     public PreferencePage() {
 	super(GRID);
@@ -23,6 +24,11 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 	addField(new BooleanFieldEditor(
 		PreferenceConstants.P_AUTO_MARK_NOT_NEW,
 		"&Automatically mark files as 'not new' on saving them",
+		getFieldEditorParent()));
+
+	addField(new BooleanFieldEditor(
+		PreferenceConstants.P_TEXT_HIGHLIGHTING_ACTIVE,
+		"Automatically highlight files in opened text editors",
 		getFieldEditorParent()));
 
 	addField(new RadioGroupFieldEditor(

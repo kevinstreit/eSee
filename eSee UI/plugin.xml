@@ -18,7 +18,7 @@
          </menu>
          <action
                label="Show News"
-               class="de.unisb.cs.esee.ui.actions.ShowNewsContextAction"
+               class="de.unisb.cs.esee.ui.actions.ShowNewsContextObjectActionDelegate"
                menubarPath="de.unisb.cs.esee.ui.fileContextMenu/group1"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.showNewsAction">
@@ -37,7 +37,7 @@
             </separator>
          </menu>
          <action
-               class="de.unisb.cs.esee.ui.actions.ShowNewsContextAction"
+               class="de.unisb.cs.esee.ui.actions.ShowNewsContextObjectActionDelegate"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.showNewsAction"
                label="Show News"
@@ -58,7 +58,7 @@
             </separator>
          </menu>
          <action
-               class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewContextAction"
+               class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewObjectActionDelegate"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.markOkAction"
                label="Mark as not new"
@@ -79,7 +79,7 @@
             </separator>
          </menu>
          <action
-               class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewContextAction"
+               class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewObjectActionDelegate"
                enablesFor="1"
                id="de.unisb.cs.esee.ui.markOkAction"
                label="Mark as not new"
@@ -290,32 +290,6 @@
       </super>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="de.unisb.cs.esee.ui.activateActionSet"
-            label="eSee: Activate"
-            visible="true">
-         <menu
-               id="de.unisb.cs.esee.ui.activateActionSet.menu"
-               label="eSee">
-            <separator
-                  name="eseegroup">
-            </separator>
-         </menu>
-         <action
-               class="de.unisb.cs.esee.ui.actions.ActivateNewsUpdatesAction"
-               icon="resources/images/activateNewsIcon.png"
-               id="de.unisb.cs.esee.ui.activateActionSet.activateAction"
-               label="Activate News Highlighting"
-               menubarPath="de.unisb.cs.esee.ui.activateActionSet.menu/eseegroup"
-               state="false"
-               style="toggle"
-               toolbarPath="eseegroup"
-               tooltip="Activate highlighting of recently changed lines for version controlled files">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="true"
@@ -364,6 +338,32 @@
       <super
             type="org.eclipse.core.resources.textmarker">
       </super>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="de.unisb.cs.esee.ui"
+            name="eSee">
+      </category>
+      <view
+            category="de.unisb.cs.esee.ui"
+            class="de.unisb.cs.esee.ui.views.NewsView"
+            icon="resources/images/activateNewsIcon.png"
+            id="de.unisb.cs.esee.ui.views.NewsView"
+            name="eSee News">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="de.unisb.cs.esee.ui.views.NewsView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
    </extension>
 
 </plugin>

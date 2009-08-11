@@ -11,16 +11,19 @@ import org.osgi.framework.BundleContext;
 
 import de.unisb.cs.esee.core.data.RevisionInfoCache;
 import de.unisb.cs.esee.ui.listeners.AutoMarkNotNewListener;
+import de.unisb.cs.esee.ui.listeners.TextFileHighlightingListener;
 import de.unisb.cs.esee.ui.markers.RevMarker;
 import de.unisb.cs.esee.ui.preferences.PreferenceConstants;
 import de.unisb.cs.esee.ui.preferences.PreferenceConstants.HighlightingMode;
+import de.unisb.cs.esee.ui.util.IRevisionHighlighter;
+import de.unisb.cs.esee.ui.util.StdRevisionHighlighter;
 
 public class ApplicationManager extends AbstractUIPlugin {
 
     public static final String PLUGIN_ID = "de.unisb.cs.esee.ui";
     private static ApplicationManager plugin;
-    private boolean highlightingActive = false;
     private HighlightingMode highlightingMode;
+    private IRevisionHighlighter highlighter;
 
     public ApplicationManager() {
     }
@@ -30,6 +33,7 @@ public class ApplicationManager extends AbstractUIPlugin {
 	super.start(context);
 	ApplicationManager.plugin = this;
 	new AutoMarkNotNewListener();
+	this.highlighter = new StdRevisionHighlighter();
 
 	resetHighlightingMode();
 
@@ -41,6 +45,8 @@ public class ApplicationManager extends AbstractUIPlugin {
 			    resetHighlightingMode();
 		    }
 		});
+
+	new TextFileHighlightingListener();
     }
 
     private void resetHighlightingMode() {
@@ -83,14 +89,21 @@ public class ApplicationManager extends AbstractUIPlugin {
     }
 
     public boolean isHighlightingActive() {
-	return highlightingActive;
+	return getPreferenceStore().getBoolean(
+		PreferenceConstants.P_TEXT_HIGHLIGHTING_ACTIVE);
     }
 
     public void setHighlightingActive(boolean highlightingActive) {
-	this.highlightingActive = highlightingActive;
+	getPreferenceStore().setValue(
+		PreferenceConstants.P_TEXT_HIGHLIGHTING_ACTIVE,
+		highlightingActive);
     }
 
     public HighlightingMode getHighlightingMode() {
 	return highlightingMode;
+    }
+
+    public IRevisionHighlighter getHighlighter() {
+	return highlighter;
     }
 }

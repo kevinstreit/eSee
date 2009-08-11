@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -13,8 +11,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import de.unisb.cs.esee.ui.ApplicationManager;
 import de.unisb.cs.esee.ui.preferences.PreferenceConstants;
 
-public class StdRevisionHighlighter implements IRevisionHighlighter,
-	IPreferenceChangeListener {
+public class StdRevisionHighlighter implements IRevisionHighlighter {
     String[] namesToIgnore;
 
     public StdRevisionHighlighter() {
@@ -68,10 +65,5 @@ public class StdRevisionHighlighter implements IRevisionHighlighter,
 	} catch (Exception e) {
 	    return false;
 	}
-    }
-
-    public void preferenceChange(PreferenceChangeEvent event) {
-	// TODO Auto-generated method stub
-
     }
 }

@@ -12,23 +12,21 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 import de.unisb.cs.esee.core.exception.NotVersionedException;
 import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
 
-public class ShowNewsContextAction implements IObjectActionDelegate {
-    private Shell shell;
+public class ShowNewsContextObjectActionDelegate implements
+	IObjectActionDelegate {
     private IFile selectedFile = null;
 
-    public ShowNewsContextAction() {
+    public ShowNewsContextObjectActionDelegate() {
 	super();
     }
 
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	shell = targetPart.getSite().getShell();
     }
 
     public void run(IAction action) {
@@ -36,7 +34,7 @@ public class ShowNewsContextAction implements IObjectActionDelegate {
 	    @Override
 	    protected IStatus run(IProgressMonitor monitor) {
 		try {
-		    return new AnnotateFileAction(shell, selectedFile, true)
+		    return new AnnotateFileAction(selectedFile, true)
 			    .run(monitor);
 		} catch (NotVersionedException e) {
 		    return Status.CANCEL_STATUS;
