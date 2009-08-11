@@ -1,6 +1,5 @@
 package de.unisb.cs.esee.core.annotate;
 
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -14,36 +13,37 @@ import de.unisb.cs.esee.core.exception.NotVersionedException;
 import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
 import de.unisb.cs.esee.core.util.SCMDeterminer;
 
-
 public class EseeAnnotations {
-    public static RevisionInfo getRevisionInfo(IResource resource, IProgressMonitor monitor) throws NotVersionedException, UnsupportedSCMException {
+    public static RevisionInfo getRevisionInfo(IResource resource,
+	    IProgressMonitor monitor) throws NotVersionedException,
+	    UnsupportedSCMException {
 	SCMSystem system = SCMDeterminer.getSystem(resource);
 	Annotator annotator = null;
 
 	switch (system) {
-	case Subversive :
+	case Subversive:
 	    annotator = new SubversiveAnnotator();
 	    break;
-	default :
+	default:
 	    throw new UnsupportedSCMException();
 	}
 
-	return RevisionInfoCache.INSTANCE.getRevisionInfo(resource, annotator, monitor);
+	return RevisionInfoCache.INSTANCE.getRevisionInfo(resource, annotator,
+		monitor);
     }
-    
+
     public static SingleRevisionInfo getResourceRevisionInfo(
-	    IResource resource,
-	    Location location,
-	    IProgressMonitor monitor
-    ) throws UnsupportedSCMException, BrokenConnectionException, NotVersionedException {
+	    IResource resource, Location location, IProgressMonitor monitor)
+	    throws UnsupportedSCMException, BrokenConnectionException,
+	    NotVersionedException {
 	SCMSystem system = SCMDeterminer.getSystem(resource);
 	Annotator annotator = null;
 
 	switch (system) {
-	case Subversive :
+	case Subversive:
 	    annotator = new SubversiveAnnotator();
 	    break;
-	default :
+	default:
 	    throw new UnsupportedSCMException();
 	}
 

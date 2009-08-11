@@ -6,20 +6,19 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import de.unisb.cs.esee.core.Activator;
 
-public class PreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+public class PreferencePage extends FieldEditorPreferencePage implements
+	IWorkbenchPreferencePage {
 
-	public PreferencePage() {
-		super(GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("General eSee preferences.");
-	}
-	
-	public void createFieldEditors() {
-	}
+    public PreferencePage() {
+	super(GRID);
+	setPreferenceStore(Activator.getDefault().getPreferenceStore());
+	setDescription("General eSee preferences.");
+    }
 
-	public void init(IWorkbench workbench) {
-	}
-	
+    public void createFieldEditors() {
+    }
+
+    public void init(IWorkbench workbench) {
+    }
+
 }

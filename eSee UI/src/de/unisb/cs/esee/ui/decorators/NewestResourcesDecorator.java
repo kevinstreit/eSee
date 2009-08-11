@@ -22,21 +22,21 @@ import de.unisb.cs.esee.ui.util.StdRevisionHighlighter;
 
 public class NewestResourcesDecorator implements ILightweightLabelDecorator {
     public static final String ID = "de.unisb.cs.esee.ui.newsdecorator";
-    
+
     private Font defaultFont;
     private Font highlightFont;
-    
+
     private IRevisionHighlighter highlighter = new StdRevisionHighlighter();
-    
+
     public NewestResourcesDecorator() {
-	PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {    
+	PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 	    public void run() {
-		defaultFont = PlatformUI.getWorkbench().getDisplay().getSystemFont();
+		defaultFont = PlatformUI.getWorkbench().getDisplay()
+			.getSystemFont();
 		FontData defaultData = defaultFont.getFontData()[0];
-		highlightFont = new Font(
-			defaultFont.getDevice(), 
-			new FontData(defaultData.getName(), defaultData.getHeight(), SWT.BOLD)
-		);
+		highlightFont = new Font(defaultFont.getDevice(), new FontData(
+			defaultData.getName(), defaultData.getHeight(),
+			SWT.BOLD));
 	    }
 	});
     }
@@ -45,10 +45,12 @@ public class NewestResourcesDecorator implements ILightweightLabelDecorator {
 	if (element instanceof IResource) {
 	    IResource resource = (IResource) element;
 	    try {
-		SingleRevisionInfo revInfo = EseeAnnotations.getResourceRevisionInfo(resource, Location.Local, null);
+		SingleRevisionInfo revInfo = EseeAnnotations
+			.getResourceRevisionInfo(resource, Location.Local, null);
 		Date curRevDate = new Date(revInfo.stamp);
-		
-		if (highlighter.isChangeOfInterest(resource, curRevDate, revInfo.author)) {
+
+		if (highlighter.isChangeOfInterest(resource, curRevDate,
+			revInfo.author)) {
 		    decoration.setFont(highlightFont);
 		} else {
 		    decoration.setFont(defaultFont);
@@ -63,14 +65,17 @@ public class NewestResourcesDecorator implements ILightweightLabelDecorator {
 	}
     }
 
-    public void addListener(ILabelProviderListener listener) {}
+    public void addListener(ILabelProviderListener listener) {
+    }
 
-    public void dispose() {}
+    public void dispose() {
+    }
 
     public boolean isLabelProperty(Object element, String property) {
 	return false;
     }
 
-    public void removeListener(ILabelProviderListener listener) {}
+    public void removeListener(ILabelProviderListener listener) {
+    }
 
 }

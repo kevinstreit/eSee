@@ -23,8 +23,8 @@ import de.unisb.cs.esee.ui.ApplicationManager;
 import de.unisb.cs.esee.ui.decorators.NewestResourcesDecorator;
 import de.unisb.cs.esee.ui.markers.RevMarker;
 
-
-public class ActivateNewsUpdatesAction implements IWorkbenchWindowActionDelegate {
+public class ActivateNewsUpdatesAction implements
+	IWorkbenchWindowActionDelegate {
     private IWorkbenchWindow window = null;
     private IFile selectedFile;
     private Job updater;
@@ -38,29 +38,39 @@ public class ActivateNewsUpdatesAction implements IWorkbenchWindowActionDelegate
     }
 
     public void run(IAction action) {
-	ApplicationManager.getDefault().setHighlightingActive(action.isChecked());
+	ApplicationManager.getDefault().setHighlightingActive(
+		action.isChecked());
 
 	if (!ApplicationManager.getDefault().isHighlightingActive()) {
 	    selectedFile = null;
+
+	    if (updater != null) {
+		updater.cancel();
+	    }
 
 	    RevisionInfoCache.INSTANCE.invalidate();
 
 	    for (String id : RevMarker.ID) {
 		try {
-		    ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(
-			    id,
-			    true,
-			    IResource.DEPTH_INFINITE
-		    );
+		    ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(id,
+			    true, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
-		    e.printStackTrace();
+		    // ignore
 		}
 	    }
+
+	    try {
+		ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(
+			RevMarker.ID_NEW_LINE, true, IResource.DEPTH_INFINITE);
+	    } catch (CoreException e) {
+		// ignore
+	    }
 	}
-	
+
 	PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 	    public void run() {
-		PlatformUI.getWorkbench().getDecoratorManager().update(NewestResourcesDecorator.ID);
+		PlatformUI.getWorkbench().getDecoratorManager().update(
+			NewestResourcesDecorator.ID);
 	    }
 	});
     }
@@ -69,13 +79,15 @@ public class ActivateNewsUpdatesAction implements IWorkbenchWindowActionDelegate
 	if (ApplicationManager.getDefault().isHighlightingActive()) {
 	    IFile file = null;
 
-	    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+	    IWorkbenchPage page = PlatformUI.getWorkbench()
+		    .getActiveWorkbenchWindow().getActivePage();
 
 	    if (page != null) {
 		IEditorPart editor = page.getActiveEditor();
 
 		if (editor != null) {
-		    Object obj = editor.getEditorInput().getAdapter(IFile.class);
+		    Object obj = editor.getEditorInput()
+			    .getAdapter(IFile.class);
 		    if (obj != null && obj instanceof IFile) {
 			file = (IFile) obj;
 		    }
@@ -89,23 +101,24 @@ public class ActivateNewsUpdatesAction implements IWorkbenchWindowActionDelegate
 
 		selectedFile = file;
 
-		updater = new Job("Annotating Resource '" + selectedFile.getName() + "'") {
+		updater = new Job("Annotating Resource '"
+			+ selectedFile.getName() + "'") {
 		    @Override
 		    protected IStatus run(IProgressMonitor monitor) {
-			while (true) {
-			    try {
-				new AnnotateFileAction(window.getShell(), selectedFile, false).run(monitor);
-				//TODO: replace by preference
+			try {
+			    while (true) {
+				new AnnotateFileAction(window.getShell(),
+					selectedFile, false).run(monitor);
 				Thread.sleep(60000);
-			    } catch (InterruptedException ex) {
-				return Status.CANCEL_STATUS;
-			    } catch (NotVersionedException e) {
-				return Status.CANCEL_STATUS;
-			    } catch (UnsupportedSCMException e) {
-				return Status.CANCEL_STATUS;
-			    } catch (CoreException e) {
-				return Status.CANCEL_STATUS;
 			    }
+			} catch (InterruptedException ex) {
+			    return Status.CANCEL_STATUS;
+			} catch (NotVersionedException e) {
+			    return Status.CANCEL_STATUS;
+			} catch (UnsupportedSCMException e) {
+			    return Status.CANCEL_STATUS;
+			} catch (CoreException e) {
+			    return Status.CANCEL_STATUS;
 			}
 		    }
 		};

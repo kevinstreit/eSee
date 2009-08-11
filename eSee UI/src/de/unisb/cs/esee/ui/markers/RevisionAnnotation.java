@@ -71,14 +71,11 @@ public class RevisionAnnotation extends Revision {
     public void addLine(int line) {
 	if (startLine == RevisionAnnotation.END_LINE) {
 	    startLine = stopLine = line;
-	}
-	else if (line == RevisionAnnotation.END_LINE) {
+	} else if (line == RevisionAnnotation.END_LINE) {
 	    addRange(new LineRange(startLine - 1, stopLine - startLine + 1));
-	}
-	else if (line - stopLine == 1) {
+	} else if (line - stopLine == 1) {
 	    stopLine = line;
-	}
-	else {
+	} else {
 	    addRange(new LineRange(startLine - 1, stopLine - startLine + 1));
 	    startLine = stopLine = line;
 	}

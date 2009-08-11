@@ -10,12 +10,14 @@ import de.unisb.cs.esee.ui.ApplicationManager;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	public void initializeDefaultPreferences() {
-		IPreferenceStore store = ApplicationManager.getDefault().getPreferenceStore();
-		
-		store.setDefault(PreferenceConstants.P_AUTO_MARK_NOT_NEW, false);
-		store.setDefault(PreferenceConstants.P_TEXT_HIGHLIGHTING_MODE, PreferenceConstants.HighlightingMode.Unchecked.name());
-		store.setDefault(PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE, "");
-	}
+    public void initializeDefaultPreferences() {
+	IPreferenceStore store = ApplicationManager.getDefault()
+		.getPreferenceStore();
+
+	store.setDefault(PreferenceConstants.P_AUTO_MARK_NOT_NEW, false);
+	store.setDefault(PreferenceConstants.P_TEXT_HIGHLIGHTING_MODE,
+		PreferenceConstants.HighlightingMode.Unchecked.name());
+	store.setDefault(PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE, "");
+    }
 
 }

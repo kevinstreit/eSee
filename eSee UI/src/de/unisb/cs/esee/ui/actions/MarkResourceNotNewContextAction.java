@@ -29,7 +29,7 @@ public class MarkResourceNotNewContextAction implements IObjectActionDelegate {
     }
 
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	
+
     }
 
     public void run(IAction action) {
@@ -40,16 +40,19 @@ public class MarkResourceNotNewContextAction implements IObjectActionDelegate {
 	if (res != null) {
 	    try {
 		res.accept(new IResourceVisitor() {
-		    public boolean visit(IResource resource) throws CoreException {
+		    public boolean visit(IResource resource)
+			    throws CoreException {
 			try {
-			    SingleRevisionInfo revInfo = EseeAnnotations.getResourceRevisionInfo(resource, Location.Local, null);
+			    SingleRevisionInfo revInfo = EseeAnnotations
+				    .getResourceRevisionInfo(resource,
+					    Location.Local, null);
 			    Date curRevDate = new Date(revInfo.stamp);
 
 			    resource.setPersistentProperty(
-				IRevisionHighlighter.lastCheckedDateProp,
-				Long.toString(curRevDate.getTime())
-			    );
-			    resource.deleteMarkers(RevMarker.ID_NEW_LINE, false, IResource.DEPTH_ZERO);
+				    IRevisionHighlighter.lastCheckedDateProp,
+				    Long.toString(curRevDate.getTime()));
+			    resource.deleteMarkers(RevMarker.ID_NEW_LINE,
+				    false, IResource.DEPTH_ZERO);
 
 			    return true;
 			} catch (Exception e) {
@@ -61,10 +64,11 @@ public class MarkResourceNotNewContextAction implements IObjectActionDelegate {
 		e.printStackTrace();
 	    }
 	}
-	
+
 	PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 	    public void run() {
-		PlatformUI.getWorkbench().getDecoratorManager().update(NewestResourcesDecorator.ID);
+		PlatformUI.getWorkbench().getDecoratorManager().update(
+			NewestResourcesDecorator.ID);
 	    }
 	});
     }
@@ -78,7 +82,8 @@ public class MarkResourceNotNewContextAction implements IObjectActionDelegate {
 		selectedResource = (IResource) obj;
 	    } else if (obj instanceof IJavaElement) {
 		try {
-		    selectedResource = ((IJavaElement) obj).getCorrespondingResource();
+		    selectedResource = ((IJavaElement) obj)
+			    .getCorrespondingResource();
 		} catch (JavaModelException e) {
 		    selectedResource = null;
 		}

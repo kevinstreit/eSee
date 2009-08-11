@@ -19,7 +19,7 @@ public class EseeQuickDiffProvider implements IQuickDiffReferenceProvider {
     }
 
     public IDocument getReference(IProgressMonitor monitor)
-    throws CoreException {
+	    throws CoreException {
 	System.out.println("getReference");
 	return null;
     }

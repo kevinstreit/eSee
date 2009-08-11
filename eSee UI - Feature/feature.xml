@@ -2,7 +2,7 @@
 <feature
       id="de.unisb.cs.esee.ui.feature"
       label="eSee UI"
-      version="0.1.6">
+      version="0.1.7">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

@@ -1,6 +1,5 @@
 package de.unisb.cs.esee.core.data;
 
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,7 +9,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import de.unisb.cs.esee.core.annotate.Annotator;
 import de.unisb.cs.esee.core.exception.NotVersionedException;
 
-
 // really enforcing a singleton with an enum
 public enum RevisionInfoCache {
     INSTANCE;
@@ -18,7 +16,9 @@ public enum RevisionInfoCache {
     private static long curCacheVersionId = 0;
     private final Map<IResource, RevisionInfo> revInfo = new ConcurrentHashMap<IResource, RevisionInfo>();
 
-    public RevisionInfo getRevisionInfo(IResource resource, Annotator annotator, IProgressMonitor monitor) throws NotVersionedException {
+    public RevisionInfo getRevisionInfo(IResource resource,
+	    Annotator annotator, IProgressMonitor monitor)
+	    throws NotVersionedException {
 	if (resource != null) {
 	    synchronized (resource) {
 		RevisionInfo info;
@@ -28,7 +28,8 @@ public enum RevisionInfoCache {
 		}
 
 		if (info != null) {
-		    String curRevID = annotator.getLocalResourceRevisionInfo(resource, monitor).revision;
+		    String curRevID = annotator.getLocalResourceRevisionInfo(
+			    resource, monitor).revision;
 
 		    if (curRevID.equals(info.revisionID)) {
 			return info;
@@ -36,7 +37,9 @@ public enum RevisionInfoCache {
 		}
 
 		info = annotator.getRevisionInfo(resource, monitor);
-		RevisionInfo newInfo = new RevisionInfo(info.lines, info.revisionID, new Long(RevisionInfoCache.curCacheVersionId++));
+		RevisionInfo newInfo = new RevisionInfo(info.lines,
+			info.revisionID, new Long(
+				RevisionInfoCache.curCacheVersionId++));
 
 		synchronized (resource) {
 		    revInfo.put(resource, newInfo);

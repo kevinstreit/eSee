@@ -13,11 +13,13 @@ public class RevisionInfo {
 
     private final HashMap<String, Object> properties = new HashMap<String, Object>();
 
-    public RevisionInfo(SingleRevisionInfo[] lineInfos, String revID, long lastCommitDate) {
+    public RevisionInfo(SingleRevisionInfo[] lineInfos, String revID,
+	    long lastCommitDate) {
 	this(lineInfos, revID, RevisionInfo.UNCACHED, lastCommitDate);
     }
 
-    public RevisionInfo(SingleRevisionInfo[] info, String revID, long lastCommitDate, long cacheVersionId) {
+    public RevisionInfo(SingleRevisionInfo[] info, String revID,
+	    long lastCommitDate, long cacheVersionId) {
 	lines = info;
 	this.cacheVersionId = cacheVersionId;
 	revisionID = revID;

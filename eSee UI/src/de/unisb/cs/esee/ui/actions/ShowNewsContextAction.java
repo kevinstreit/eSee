@@ -19,7 +19,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import de.unisb.cs.esee.core.exception.NotVersionedException;
 import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
 
-
 public class ShowNewsContextAction implements IObjectActionDelegate {
     private Shell shell;
     private IFile selectedFile = null;
@@ -37,7 +36,8 @@ public class ShowNewsContextAction implements IObjectActionDelegate {
 	    @Override
 	    protected IStatus run(IProgressMonitor monitor) {
 		try {
-		    return new AnnotateFileAction(shell, selectedFile, true).run(monitor);
+		    return new AnnotateFileAction(shell, selectedFile, true)
+			    .run(monitor);
 		} catch (NotVersionedException e) {
 		    return Status.CANCEL_STATUS;
 		} catch (UnsupportedSCMException e) {
