@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
@@ -20,6 +21,7 @@ import de.unisb.cs.esee.core.annotate.EseeAnnotations;
 import de.unisb.cs.esee.core.annotate.Annotator.Location;
 import de.unisb.cs.esee.core.data.SingleRevisionInfo;
 import de.unisb.cs.esee.core.exception.EseeException;
+import de.unisb.cs.esee.ui.util.IRevisionHighlighter;
 
 class NewsViewLabelProvider extends LabelProvider implements
 	ITableLabelProvider {
@@ -41,6 +43,21 @@ class NewsViewLabelProvider extends LabelProvider implements
 		    return revInfo.author;
 		case 2:
 		    return curRevDate.toString();
+		case 3:
+		    try {
+			String stamp = resource
+				.getPersistentProperty(IRevisionHighlighter.lastCheckedDateProp);
+
+			if (stamp == null)
+			    return "never";
+
+			long lcdStamp = Long.parseLong(stamp);
+			Date lcd = new Date(lcdStamp);
+
+			return lcd.toString();
+		    } catch (CoreException e) {
+			return "unknown";
+		    }
 		}
 	    } catch (EseeException e) {
 		return "Error: " + e.getMessage();

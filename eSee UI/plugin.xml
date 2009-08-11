@@ -59,7 +59,7 @@
          </menu>
          <action
                class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewObjectActionDelegate"
-               enablesFor="1"
+               enablesFor="*"
                id="de.unisb.cs.esee.ui.markOkAction"
                label="Mark as not new"
                menubarPath="de.unisb.cs.esee.ui.fileContextMenu/group2">
@@ -80,7 +80,7 @@
          </menu>
          <action
                class="de.unisb.cs.esee.ui.actions.MarkResourceNotNewObjectActionDelegate"
-               enablesFor="1"
+               enablesFor="*"
                id="de.unisb.cs.esee.ui.markOkAction"
                label="Mark as not new"
                menubarPath="de.unisb.cs.esee.ui.javaElementContextMenu/group2">

@@ -13,7 +13,7 @@ import de.unisb.cs.esee.ui.util.MarkNotNewOperation;
 
 public class MarkResourceNotNewObjectActionDelegate implements
 	IObjectActionDelegate {
-    private IResource selectedResource = null;
+    private IStructuredSelection selection = null;
 
     public MarkResourceNotNewObjectActionDelegate() {
 	super();
@@ -24,28 +24,33 @@ public class MarkResourceNotNewObjectActionDelegate implements
     }
 
     public void run(IAction action) {
-	MarkNotNewOperation.INSTANCE.markResourceNotNew(selectedResource, true,
-		true);
+	if (this.selection != null) {
+	    for (Object obj : this.selection.toArray()) {
+		IResource selectedResource = null;
+
+		if (obj instanceof IResource)
+		    selectedResource = (IResource) obj;
+		else if (obj instanceof IJavaElement) {
+		    try {
+			selectedResource = ((IJavaElement) obj)
+				.getCorrespondingResource();
+		    } catch (JavaModelException e) {
+			selectedResource = null;
+		    }
+		}
+
+		if (selectedResource != null)
+		    MarkNotNewOperation.INSTANCE.markResourceNotNew(
+			    selectedResource, true, true);
+	    }
+	}
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
 	if (selection instanceof IStructuredSelection) {
-	    IStructuredSelection sel = (IStructuredSelection) selection;
-	    Object obj = sel.getFirstElement();
-
-	    if (obj instanceof IResource) {
-		selectedResource = (IResource) obj;
-	    } else if (obj instanceof IJavaElement) {
-		try {
-		    selectedResource = ((IJavaElement) obj)
-			    .getCorrespondingResource();
-		} catch (JavaModelException e) {
-		    selectedResource = null;
-		}
-	    } else {
-		selectedResource = null;
-	    }
-	}
+	    this.selection = (IStructuredSelection) selection;
+	} else
+	    this.selection = null;
     }
 
 }

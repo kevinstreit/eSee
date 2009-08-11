@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
@@ -60,23 +62,44 @@ public class NewsView extends ViewPart implements Observer,
     public void createPartControl(Composite parent) {
 	viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 		| SWT.V_SCROLL);
-	viewer.setSorter(new NameSorter());
+	final NewsViewSorter sorter = new NewsViewSorter();
 
-	String[] titles = { "File", "Last Author", "Date" };
-	int[] bounds = { 180, 100, 150 };
+	String[] titles = { "File", "Last Author", "Last Change Date",
+		"Last Checked Date" };
+	int[] bounds = { 250, 120, 200, 200 };
 
 	for (int i = 0; i < titles.length; i++) {
-	    TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
+	    final TableViewerColumn column = new TableViewerColumn(viewer,
+		    SWT.NONE);
 	    column.getColumn().setText(titles[i]);
 	    column.getColumn().setWidth(bounds[i]);
 	    column.getColumn().setResizable(true);
 	    column.getColumn().setMoveable(true);
+
+	    final int index = i;
+	    column.getColumn().addSelectionListener(new SelectionAdapter() {
+		public void widgetSelected(SelectionEvent e) {
+		    sorter.setColumn(index);
+		    int dir = viewer.getTable().getSortDirection();
+		    if (viewer.getTable().getSortColumn() == column.getColumn()) {
+			dir = dir == SWT.UP ? SWT.DOWN : SWT.UP;
+		    } else {
+			dir = SWT.DOWN;
+		    }
+		    viewer.getTable().setSortDirection(dir);
+		    viewer.getTable().setSortColumn(column.getColumn());
+		    viewer.refresh();
+		}
+	    });
 	}
 
 	Table table = viewer.getTable();
 	table.setHeaderVisible(true);
 	table.setLinesVisible(true);
+	table.setSortColumn(table.getColumn(2));
+	table.setSortDirection(SWT.DOWN);
 
+	viewer.setSorter(sorter);
 	viewer.setContentProvider(new NewsViewContentProvider());
 	viewer.setLabelProvider(new NewsViewLabelProvider());
 	viewer.setInput(ResourcesPlugin.getWorkspace().getRoot());

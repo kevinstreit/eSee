@@ -116,7 +116,9 @@ public class TextFileHighlightingListener {
 			selectedFile = file;
 
 			if (updater != null) {
-			    updater.getThread().interrupt();
+			    if (updater.getThread() != null) {
+				updater.getThread().interrupt();
+			    }
 			}
 		    }
 		}
