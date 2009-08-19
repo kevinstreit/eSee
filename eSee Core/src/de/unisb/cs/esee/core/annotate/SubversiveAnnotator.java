@@ -97,4 +97,8 @@ public class SubversiveAnnotator implements Annotator {
 
 	return revInfo;
     }
+
+    public String getResourceAnnotationsQuickDiffProvider(IResource resource) {
+	return "org.eclipse.team.svn.ui.annotate.SVNTeamQuickDiffProvider";
+    }
 }

@@ -23,4 +23,6 @@ public interface Annotator {
 
     public SingleRevisionInfo getRemoteResourceRevisionInfo(IResource resource,
 	    IProgressMonitor monitor) throws BrokenConnectionException;
+
+    public String getResourceAnnotationsQuickDiffProvider(IResource resource);
 }

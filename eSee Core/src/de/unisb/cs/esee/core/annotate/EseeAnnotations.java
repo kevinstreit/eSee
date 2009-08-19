@@ -56,4 +56,21 @@ public class EseeAnnotations {
 
 	return null;
     }
+
+    public static String getResourceAnnotationsQuickDiffProvider(
+	    IResource resource) throws UnsupportedSCMException,
+	    BrokenConnectionException, NotVersionedException {
+	SCMSystem system = SCMDeterminer.getSystem(resource);
+	Annotator annotator = null;
+
+	switch (system) {
+	case Subversive:
+	    annotator = new SubversiveAnnotator();
+	    break;
+	default:
+	    throw new UnsupportedSCMException();
+	}
+
+	return annotator.getResourceAnnotationsQuickDiffProvider(resource);
+    }
 }

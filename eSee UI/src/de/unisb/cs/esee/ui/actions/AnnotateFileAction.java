@@ -33,8 +33,10 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import de.unisb.cs.esee.core.annotate.EseeAnnotations;
 import de.unisb.cs.esee.core.data.RevisionInfo;
 import de.unisb.cs.esee.core.data.SingleRevisionInfo;
+import de.unisb.cs.esee.core.exception.BrokenConnectionException;
+import de.unisb.cs.esee.core.exception.NotVersionedException;
+import de.unisb.cs.esee.core.exception.UnsupportedSCMException;
 import de.unisb.cs.esee.ui.ApplicationManager;
-import de.unisb.cs.esee.ui.markers.EseeQuickDiffProvider;
 import de.unisb.cs.esee.ui.markers.RevMarker;
 import de.unisb.cs.esee.ui.markers.RevisionAnnotation;
 import de.unisb.cs.esee.ui.preferences.PreferenceConstants.HighlightingMode;
@@ -272,10 +274,19 @@ public class AnnotateFileAction extends Thread {
 				    && editor instanceof AbstractDecoratedTextEditor
 				    && rinfo != null) {
 				AbstractDecoratedTextEditor textEditor = (AbstractDecoratedTextEditor) editor;
-				textEditor.showRevisionInformation(rinfo,
-					EseeQuickDiffProvider.class.getName());
+				textEditor
+					.showRevisionInformation(
+						rinfo,
+						EseeAnnotations
+							.getResourceAnnotationsQuickDiffProvider(file));
 			    }
 			} catch (PartInitException e) {
+			    e.printStackTrace();
+			} catch (UnsupportedSCMException e) {
+			    e.printStackTrace();
+			} catch (BrokenConnectionException e) {
+			    e.printStackTrace();
+			} catch (NotVersionedException e) {
 			    e.printStackTrace();
 			}
 		    }
