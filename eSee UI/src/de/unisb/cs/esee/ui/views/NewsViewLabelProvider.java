@@ -40,10 +40,13 @@ class NewsViewLabelProvider extends LabelProvider implements
 		case 0:
 		    return resource.getName();
 		case 1:
-		    return revInfo.author;
+		    return resource.getProject() != null ? resource
+			    .getProject().getName() : "none";
 		case 2:
-		    return curRevDate.toString();
+		    return revInfo.author;
 		case 3:
+		    return curRevDate.toString();
+		case 4:
 		    try {
 			String stamp = resource
 				.getPersistentProperty(IRevisionHighlighter.lastCheckedDateProp);

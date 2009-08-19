@@ -3,6 +3,7 @@ package de.unisb.cs.esee.ui.views;
 import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -65,12 +66,25 @@ public class NewsViewSorter extends ViewerSorter {
 		result = f1.getName().compareTo(f2.getName());
 		break;
 	    case 1:
-		result = revInfo1.author.compareTo(revInfo2.author);
+		IProject p1 = f1.getProject();
+		IProject p2 = f2.getProject();
+
+		if (p1 == null)
+		    result = -1;
+
+		if (p2 == null)
+		    result = 1;
+
+		result = p1.getName().compareTo(p2.getName());
+
 		break;
 	    case 2:
-		result = curRevDate1.compareTo(curRevDate2);
+		result = revInfo1.author.compareTo(revInfo2.author);
 		break;
 	    case 3:
+		result = curRevDate1.compareTo(curRevDate2);
+		break;
+	    case 4:
 		try {
 		    String stamp1 = f1
 			    .getPersistentProperty(IRevisionHighlighter.lastCheckedDateProp);

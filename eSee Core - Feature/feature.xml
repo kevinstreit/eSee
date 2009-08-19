@@ -2,7 +2,7 @@
 <feature
       id="de.unisb.cs.esee.core.feature"
       label="eSee Core"
-      version="0.1.5.1">
+      version="0.1.6">
 
    <description url="http://kevinstreit.github.com/eSee/">
       eSee brings change awareness to the minds of programmers.

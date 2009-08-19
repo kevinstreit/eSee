@@ -2,7 +2,7 @@
 <feature
       id="de.unisb.cs.esee.ui.feature"
       label="eSee UI"
-      version="0.1.8.1">
+      version="0.1.9">
 
    <description url="http://kevinstreit.github.com/eSee/">
       eSee brings change awareness to the minds of programmers.
@@ -77,8 +77,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="de.unisb.cs.esee.core" version="0.1.5" match="perfect"/>
-      <import feature="de.unisb.cs.esee.core.feature" version="0.1.5.1" match="perfect"/>
+      <import plugin="de.unisb.cs.esee.core" version="0.1.6" match="perfect"/>
+      <import feature="de.unisb.cs.esee.core.feature" version="0.1.6" match="perfect"/>
    </requires>
 
    <plugin

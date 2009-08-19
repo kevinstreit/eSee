@@ -67,9 +67,9 @@ public class NewsView extends ViewPart implements Observer,
 		| SWT.V_SCROLL);
 	final NewsViewSorter sorter = new NewsViewSorter();
 
-	String[] titles = { "File", "Last Author", "Last Change Date",
-		"Last Checked Date" };
-	int[] bounds = { 250, 120, 200, 200 };
+	String[] titles = { "File", "Project", "Last Author",
+		"Last Change Date", "Last Checked Date" };
+	int[] bounds = { 250, 150, 120, 200, 200 };
 
 	for (int i = 0; i < titles.length; i++) {
 	    final TableViewerColumn column = new TableViewerColumn(viewer,
