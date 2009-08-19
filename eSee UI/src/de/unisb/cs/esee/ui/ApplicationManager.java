@@ -6,10 +6,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.unisb.cs.esee.core.data.RevisionInfoCache;
+import de.unisb.cs.esee.ui.decorators.NewestResourcesDecorator;
 import de.unisb.cs.esee.ui.listeners.AutoMarkNotNewListener;
 import de.unisb.cs.esee.ui.listeners.TextFileHighlightingListener;
 import de.unisb.cs.esee.ui.markers.RevMarker;
@@ -69,6 +71,9 @@ public class ApplicationManager extends AbstractUIPlugin {
 	} catch (CoreException e) {
 	    // ignore
 	}
+
+	PlatformUI.getWorkbench().getDecoratorManager().update(
+		NewestResourcesDecorator.ID);
     }
 
     @Override

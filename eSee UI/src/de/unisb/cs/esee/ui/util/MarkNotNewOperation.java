@@ -64,7 +64,7 @@ public class MarkNotNewOperation extends Observable {
 			resource.setPersistentProperty(
 				IRevisionHighlighter.lastCheckedDateProp, Long
 					.toString(curRevDate.getTime()));
-			resource.deleteMarkers(RevMarker.ID_NEW_LINE, false,
+			resource.deleteMarkers(RevMarker.ID_NEW_LINE, true,
 				IResource.DEPTH_ZERO);
 
 			RevisionInfoCache.INSTANCE.invalidateFor(resource);

@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -14,6 +15,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,6 +41,7 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
+import de.unisb.cs.esee.ui.ApplicationManager;
 import de.unisb.cs.esee.ui.actions.EnableHighlightingAction;
 import de.unisb.cs.esee.ui.actions.MarkAllResourcesNotNew;
 import de.unisb.cs.esee.ui.actions.OpenEseeUIPreferencePageAction;
@@ -109,6 +113,12 @@ public class NewsView extends ViewPart implements Observer,
 
 	MarkNotNewOperation.INSTANCE.addObserver(this);
 	ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+	ApplicationManager.getDefault().getPreferenceStore()
+		.addPropertyChangeListener(new IPropertyChangeListener() {
+		    public void propertyChange(PropertyChangeEvent event) {
+			update(null, null);
+		    }
+		});
 
 	makeActions();
 	hookDoubleClickAction();
@@ -177,9 +187,11 @@ public class NewsView extends ViewPart implements Observer,
 	try {
 	    delta.accept(new IResourceDeltaVisitor() {
 		public boolean visit(IResourceDelta delta) throws CoreException {
-		    if ((delta.getFlags() & IResourceDelta.CONTENT) != 0
-			    && delta.getResource() != null
-			    && delta.getResource() instanceof IFile) {
+		    if (delta.getResource() != null
+			    && (delta.getResource() instanceof IFile || delta
+				    .getResource() instanceof IProject)
+			    && (delta.getKind() == IResourceDelta.ADDED || delta
+				    .getKind() == IResourceDelta.REMOVED)) {
 			update(null, delta.getResource());
 		    }
 
