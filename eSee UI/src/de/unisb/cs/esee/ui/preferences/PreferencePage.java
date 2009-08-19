@@ -45,6 +45,11 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 				PreferenceConstants.HighlightingMode.Top5
 					.name() } }, getFieldEditorParent()));
 
+	addField(new BooleanFieldEditor(
+		PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE_OWN,
+		"Don't highlight revisions committed by me",
+		getFieldEditorParent()));
+
 	addField(new StringFieldEditor(
 		PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE,
 		"Don't highlight revisions committed by the following users:",

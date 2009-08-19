@@ -17,4 +17,5 @@ public class PreferenceConstants {
 
     public static String P_TEXT_HIGHLIGHTING_ACTIVE = "textHighlightingActive";
 
+    public static String P_TEXT_HIGHLIGHTING_IGNORE_OWN = "highlightingIgnoreOwnUser";
 }

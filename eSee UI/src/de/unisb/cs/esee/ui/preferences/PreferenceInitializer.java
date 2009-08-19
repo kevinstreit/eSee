@@ -19,6 +19,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConstants.HighlightingMode.Unchecked.name());
 	store.setDefault(PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE, "");
 	store.setDefault(PreferenceConstants.P_TEXT_HIGHLIGHTING_ACTIVE, false);
+	store.setDefault(PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE_OWN,
+		true);
     }
 
 }

@@ -73,4 +73,20 @@ public class EseeAnnotations {
 
 	return annotator.getResourceAnnotationsQuickDiffProvider(resource);
     }
+
+    public static String getResourceRepoUsername(IResource resource)
+	    throws UnsupportedSCMException {
+	SCMSystem system = SCMDeterminer.getSystem(resource);
+	Annotator annotator = null;
+
+	switch (system) {
+	case Subversive:
+	    annotator = new SubversiveAnnotator();
+	    break;
+	default:
+	    throw new UnsupportedSCMException();
+	}
+
+	return annotator.getResourceRepoUsername(resource);
+    }
 }

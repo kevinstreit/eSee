@@ -101,4 +101,10 @@ public class SubversiveAnnotator implements Annotator {
     public String getResourceAnnotationsQuickDiffProvider(IResource resource) {
 	return "org.eclipse.team.svn.ui.annotate.SVNTeamQuickDiffProvider";
     }
+
+    public String getResourceRepoUsername(IResource resource) {
+	IRepositoryResource remote = SVNRemoteStorage.instance()
+		.asRepositoryResource(resource);
+	return remote.getRepositoryLocation().getUsername();
+    }
 }

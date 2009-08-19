@@ -25,4 +25,6 @@ public interface Annotator {
 	    IProgressMonitor monitor) throws BrokenConnectionException;
 
     public String getResourceAnnotationsQuickDiffProvider(IResource resource);
+
+    public String getResourceRepoUsername(IResource resource);
 }

@@ -8,20 +8,36 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
+import de.unisb.cs.esee.core.annotate.EseeAnnotations;
 import de.unisb.cs.esee.ui.ApplicationManager;
 import de.unisb.cs.esee.ui.preferences.PreferenceConstants;
 
 public class StdRevisionHighlighter implements IRevisionHighlighter {
-    String[] namesToIgnore;
+    private String[] namesToIgnore;
+    private boolean ignoreOwnUser = true;
 
     public StdRevisionHighlighter() {
 	initNamesToIgnore();
+	IPreferenceStore prefs = ApplicationManager.getDefault()
+		.getPreferenceStore();
+	this.ignoreOwnUser = prefs
+		.getBoolean(PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE_OWN);
+
 	ApplicationManager.getDefault().getPreferenceStore()
 		.addPropertyChangeListener(new IPropertyChangeListener() {
 		    public void propertyChange(PropertyChangeEvent event) {
 			if (event.getProperty().equals(
 				PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE))
 			    initNamesToIgnore();
+			else if (event
+				.getProperty()
+				.equals(
+					PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE_OWN)) {
+			    IPreferenceStore prefs = ApplicationManager
+				    .getDefault().getPreferenceStore();
+			    StdRevisionHighlighter.this.ignoreOwnUser = prefs
+				    .getBoolean(PreferenceConstants.P_TEXT_HIGHLIGHTING_IGNORE_OWN);
+			}
 		    }
 		});
     }
@@ -47,6 +63,11 @@ public class StdRevisionHighlighter implements IRevisionHighlighter {
     public boolean isChangeOfInterest(IResource resource, Date date,
 	    String author) {
 	try {
+	    String resUser = EseeAnnotations.getResourceRepoUsername(resource);
+	    if (this.ignoreOwnUser && resUser.equals(author)) {
+		return false;
+	    }
+
 	    for (String cmpUser : this.namesToIgnore) {
 		if (cmpUser.equalsIgnoreCase(author))
 		    return false;
