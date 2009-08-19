@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -37,6 +38,7 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
+import de.unisb.cs.esee.ui.actions.EnableHighlightingAction;
 import de.unisb.cs.esee.ui.actions.MarkAllResourcesNotNew;
 import de.unisb.cs.esee.ui.actions.OpenEseeUIPreferencePageAction;
 import de.unisb.cs.esee.ui.util.EseeUIUtil;
@@ -52,6 +54,7 @@ public class NewsView extends ViewPart implements Observer,
     private Action markAllAsNotNewAction;
     private Action openPreferencesAction;
     private Action openEditorAction;
+    private Action enableTetxHighlightingAction;
 
     class NameSorter extends ViewerSorter {
     }
@@ -127,13 +130,16 @@ public class NewsView extends ViewPart implements Observer,
     }
 
     private void fillLocalToolBar(IToolBarManager manager) {
+	manager.add(enableTetxHighlightingAction);
 	manager.add(markAllAsNotNewAction);
+	manager.add(new Separator());
 	manager.add(openPreferencesAction);
     }
 
     private void makeActions() {
 	markAllAsNotNewAction = new MarkAllResourcesNotNew();
 	openPreferencesAction = new OpenEseeUIPreferencePageAction();
+	enableTetxHighlightingAction = new EnableHighlightingAction();
 
 	openEditorAction = new Action() {
 	    public void run() {

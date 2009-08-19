@@ -35,21 +35,19 @@ public class ApplicationManager extends AbstractUIPlugin {
 	new AutoMarkNotNewListener();
 	this.highlighter = new StdRevisionHighlighter();
 
-	resetHighlightingMode();
+	resetMarkersAndCache();
 
 	getPreferenceStore().addPropertyChangeListener(
 		new IPropertyChangeListener() {
 		    public void propertyChange(PropertyChangeEvent event) {
-			if (event.getProperty().equals(
-				PreferenceConstants.P_TEXT_HIGHLIGHTING_MODE))
-			    resetHighlightingMode();
+			resetMarkersAndCache();
 		    }
 		});
 
 	new TextFileHighlightingListener();
     }
 
-    private void resetHighlightingMode() {
+    private void resetMarkersAndCache() {
 	String mString = ApplicationManager.getDefault().getPreferenceStore()
 		.getString(PreferenceConstants.P_TEXT_HIGHLIGHTING_MODE);
 	highlightingMode = HighlightingMode.valueOf(mString);

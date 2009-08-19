@@ -1,11 +1,15 @@
 package de.unisb.cs.esee.ui.listeners;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -28,6 +32,7 @@ import de.unisb.cs.esee.ui.preferences.PreferenceConstants;
 public class TextFileHighlightingListener {
     private IFile selectedFile;
     private Job updater;
+    private Semaphore markNow = new Semaphore(0);
 
     public TextFileHighlightingListener() {
 	ApplicationManager.getDefault().getPreferenceStore()
@@ -40,7 +45,9 @@ public class TextFileHighlightingListener {
 				selectedFile = null;
 
 				if (updater != null) {
-				    updater.cancel();
+				    if (updater.getThread() != null) {
+					markNow.release();
+				    }
 				}
 
 				RevisionInfoCache.INSTANCE.invalidate();
@@ -117,7 +124,7 @@ public class TextFileHighlightingListener {
 
 			if (updater != null) {
 			    if (updater.getThread() != null) {
-				updater.getThread().interrupt();
+				markNow.release();
 			    }
 			}
 		    }
@@ -165,28 +172,22 @@ public class TextFileHighlightingListener {
 	}
 
 	updater = new Job("eSee: Annotating Resources") {
+
 	    @Override
 	    protected IStatus run(IProgressMonitor monitor) {
 
 		while (true) {
-		    try {
-			try {
-			    if (ApplicationManager.getDefault()
-				    .isHighlightingActive()
-				    && selectedFile != null) {
-				new AnnotateFileAction(selectedFile, false,
-					monitor).start();
-			    }
-			} catch (Exception e) {
-			    // ignore this resource
-			}
+		    if (ApplicationManager.getDefault().isHighlightingActive()
+			    && selectedFile != null) {
+			new AnnotateFileAction(selectedFile, false, monitor)
+				.start();
+		    }
 
-			Thread.sleep(10000);
+		    try {
+			markNow.tryAcquire(10, TimeUnit.SECONDS);
+			markNow.drainPermits();
 		    } catch (InterruptedException e) {
-			// ignore this
-			// this job should always run
-			// InterruptedException can be used to immediately mark
-			// the resource (circumvent the 10 seconds)
+			return Status.CANCEL_STATUS;
 		    }
 		}
 	    }
