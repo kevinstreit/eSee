@@ -24,3 +24,5 @@
 	- Two groups of students (one using our tool)
 	- Each programming a kind of 1 or 2 hour exercise
 	- Introducing somehow an error that will be highlighted in the one group because it was contained in the last 5 commits
+
+wnbf
